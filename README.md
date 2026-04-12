@@ -67,13 +67,12 @@ Rack capacity:
 every switch uses 1U
 
 ### Rack logic
-Every rack always contains at least one rack switch
-Exactly one global main rack receives an additional switch
-This global main rack acts as the central uplink point to the customer cabinet
+- Every rack always contains at least one rack switch
+- Exactly one global main rack receives an additional switch
+- This global main rack acts as the central uplink point to the customer cabinet
 
 ### Network logic
 
-Rack switches:
 Rack switches are currently based on:
 
 - 4x QSFP+ + 16x SFP+/SFP28
