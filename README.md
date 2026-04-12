@@ -28,23 +28,22 @@ DataCenterPlanner calculates a complete rack and basic network layout based on t
 
 Two planning strategies are currently available:
 
-"Marius Mode" (name will be changed eventually, as this was my first thought since i love visually appealing racks instead of packed opnes)
+- "Marius Mode" (name will be changed eventually, as this was my first thought since i love visually appealing racks instead of packed opnes)
 Distributes racks in a structured way and keeps racks visually balanced where possible.
-Minimum Racks
-Packs hardware into as few racks as possible.
+- "Minimum Racks" Packs hardware into as few racks as possible.
 
 ### 2. Enter required IOPS per server family
 You can define target IOPS separately for:
 
-SystemX
-RISC
-Mainframe
-GPU
+- SystemX
+- RISC
+- Mainframe
+-GPU
 
 The planner automatically selects:
 
-12k servers (12,000 IOPS / 7U)
-5k servers (5,000 IOPS / 3U)
+- 12k servers (12,000 IOPS / 7U)
+- 5k servers (5,000 IOPS / 3U)
 
 to reach or slightly exceed the requested target.
 
@@ -52,22 +51,22 @@ to reach or slightly exceed the requested target.
 
 When Plan with redundancy is enabled:
 
-each server is calculated with two cable connections
-this doubles required switch ports
-additional rack switches may be required automatically
+- each server is calculated with two cable connections
+- this doubles required switch ports
+- additional rack switches may be required automatically
 
-Hardware assumptions currently used:
-Rack capacity
-1 Rack = 47U
+### Hardware assumptions currently used:
+Rack capacity:
+- 1 Rack = 47U
 
-Server sizes
-12k Server = 7U
-5k Server = 3U
+### Server sizes
+- 12k Server = 7U
+- 5k Server = 3U
 
-Switch size
+### Switch size
 every switch uses 1U
 
-Rack logic
+### Rack logic
 Every rack always contains at least one rack switch
 Exactly one global main rack receives an additional switch
 This global main rack acts as the central uplink point to the customer cabinet
@@ -77,33 +76,33 @@ This global main rack acts as the central uplink point to the customer cabinet
 Rack switches:
 Rack switches are currently based on:
 
-4x QSFP+ + 16x SFP+/SFP28
-32x QSFP+
+- 4x QSFP+ + 16x SFP+/SFP28
+- 32x QSFP+
 
 They are used both for:
 
-local server connections
-uplink to the main switch
-Port logic
+- local server connections
+- uplink to the main switch
+- Port logic
 
-Without redundancy:
+### Without redundancy:
 
 1 server = 1 required switch port
 
-With redundancy:
+### With redundancy:
 
 1 server = 2 required switch ports
 
 Rack switch count is calculated automatically from required ports.
 
-SFP calculation
-QSFP modules
+- SFP calculation
+- QSFP modules
 
 QSFP modules are calculated for:
 
-rack switch → main switch
-main switch → customer rack
-RJ45 SFP modules
+- rack switch → main switch
+- main switch → customer rack
+- RJ45 SFP modules
 
 RJ45 SFP modules are calculated for all server cable connections.
 
@@ -113,17 +112,17 @@ All SFP modules are converted into 5-pack purchase units.
 
 This version intentionally uses simplified assumptions:
 
-cable lengths are not considered
-exact port assignment inside individual switches is simplified
-all racks currently use the same rack-switch strategy
-Switch modes for combining ports to achive higher transfer speeds are not considered
+- cable lengths are not considered
+- exact port assignment inside individual switches is simplified
+- all racks currently use the same rack-switch strategy
+- Switch modes for combining ports to achive higher transfer speeds are not considered
 
 The goal is fast practical planning inside the game. And after all this is the first Version, currently only tested by me
 
 ## Known issues:
 
-Scrolling only works when not hovering over the result Cards
-Some Summary Cards are sometimes not sized evenly on other screens
+- Scrolling only works when not hovering over the result Cards
+- Some Summary Cards are sometimes not sized evenly on other screens
 
 Please feel free to comment for features you might want or simply use github to contribute.
 
