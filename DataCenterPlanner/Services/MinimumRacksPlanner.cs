@@ -9,15 +9,28 @@ namespace DataCenterPlanner.Services
     {
         public PlannerResult Calculate(List<CategoryRequest> requests, HardwareConfig config)
         {
+            if (!config.Allow12kServers && !config.Allow5kServers)
+            {
+                throw new InvalidOperationException("At least one server type must be allowed.");
+            }
+
             var result = new PlannerResult();
             int globalRackNumber = 1;
+            var optimizer = new ServerCombinationOptimizer();
 
             foreach (var request in requests.Where(r => r.TargetIops > 0))
             {
-                int remainingIops = request.TargetIops;
+                var bestCombination = optimizer.FindBestCombination(
+                    request.TargetIops,
+                    config,
+                    prefer12k: true);
+
+                int remaining12k = bestCombination.Count12k;
+                int remaining5k = bestCombination.Count5k;
+
                 var categoryRacks = new List<RackPlan>();
 
-                while (remainingIops > 0)
+                while (remaining12k > 0 || remaining5k > 0)
                 {
                     var rack = new RackPlan
                     {
@@ -28,45 +41,38 @@ namespace DataCenterPlanner.Services
                         SwitchCount = 1
                     };
 
-                    bool addedSomething;
+                    int usedUnits = config.SwitchUnits;
+
+                    bool placedSomething;
 
                     do
                     {
-                        addedSomething = false;
+                        placedSomething = false;
 
-                        int hypothetical12kUnits =
-                            ((rack.Count12kServers + 1) * config.Server12kUnits) +
-                            (rack.Count5kServers * config.Server5kUnits) +
-                            (rack.SwitchCount * config.SwitchUnits);
-
-                        if (hypothetical12kUnits <= config.RackUnits)
+                        if (remaining12k > 0 &&
+                            usedUnits + config.Server12kUnits <= config.RackUnits)
                         {
                             rack.Count12kServers++;
-                            remainingIops -= config.Server12kIops;
-                            addedSomething = true;
-
-                            if (remainingIops <= 0)
-                                break;
+                            remaining12k--;
+                            usedUnits += config.Server12kUnits;
+                            placedSomething = true;
                         }
 
-                        int hypothetical5kUnits =
-                            (rack.Count12kServers * config.Server12kUnits) +
-                            ((rack.Count5kServers + 1) * config.Server5kUnits) +
-                            (rack.SwitchCount * config.SwitchUnits);
-
-                        if (remainingIops > 0 && hypothetical5kUnits <= config.RackUnits)
+                        if (remaining5k > 0 &&
+                            usedUnits + config.Server5kUnits <= config.RackUnits)
                         {
                             rack.Count5kServers++;
-                            remainingIops -= config.Server5kIops;
-                            addedSomething = true;
+                            remaining5k--;
+                            usedUnits += config.Server5kUnits;
+                            placedSomething = true;
                         }
 
-                    } while (addedSomething && remainingIops > 0);
+                    } while (placedSomething);
 
                     if (rack.TotalServerCount == 0)
                     {
                         throw new InvalidOperationException(
-                            $"Could not place any server for {request.Category}.");
+                            $"Could not place any server in rack {rack.RackNumber}.");
                     }
 
                     categoryRacks.Add(rack);
@@ -96,7 +102,7 @@ namespace DataCenterPlanner.Services
             result.TotalPlannedIops = result.Racks.Sum(r => r.TotalIops);
             result.Total12kServers = result.Racks.Sum(r => r.Count12kServers);
             result.Total5kServers = result.Racks.Sum(r => r.Count5kServers);
-            result.TotalSwitches = result.Racks.Sum(r => r.SwitchCount);
+            result.TotalSwitches = result.Racks.Sum(r => r.TotalDisplayedSwitches);
 
             return result;
         }

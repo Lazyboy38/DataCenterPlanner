@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using DataCenterPlanner.Models;
 using DataCenterPlanner.Services;
 using DataCenterPlanner.Logic;
+using System.Linq;
 
 namespace DataCenterPlanner
 {
@@ -38,7 +39,17 @@ namespace DataCenterPlanner
                     new CategoryRequest { Category = ServerCategory.GPU, TargetIops = gpuIops }
                 };
 
-                var config = new HardwareConfig();
+                var config = new HardwareConfig
+                {
+                    Allow12kServers = Allow12kServersCheckBox.IsChecked == true,
+                    Allow5kServers = Allow5kServersCheckBox.IsChecked == true
+                };
+
+                if (!config.Allow12kServers && !config.Allow5kServers)
+                {
+                    MessageBox.Show("Please enable at least one server type.");
+                    return;
+                }
 
                 string selectedMode =
                     (PlanningModeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString()
@@ -52,6 +63,7 @@ namespace DataCenterPlanner
                 result.Network = NetworkPlanner.Calculate(
                 result.Racks,
                 RedundancyCheckBox.IsChecked == true);
+                result.TotalSwitches = result.Racks.Sum(r => r.TotalDisplayedSwitches);
 
                 DataContext = result;
             }

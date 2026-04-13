@@ -12,9 +12,16 @@
         public int Count12kServers { get; set; }
         public int Count5kServers { get; set; }
 
+        // Basis aus alter Logik bleibt erstmal erhalten
         public int SwitchCount { get; set; } = 1;
 
         public bool IsMainRack { get; set; }
+
+        // Neue Netzwerk-bezogene Werte
+        public int RequiredRackSwitches { get; set; } = 1;
+        public int ExtraMainSwitches { get; set; } = 0;
+
+        public int TotalDisplayedSwitches => RequiredRackSwitches + ExtraMainSwitches;
 
         public string MainRackLabel => IsMainRack ? " [GLOBAL MAIN RACK]" : "";
 

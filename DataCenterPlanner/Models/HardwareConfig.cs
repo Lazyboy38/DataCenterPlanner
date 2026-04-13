@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DataCenterPlanner.Models
+﻿namespace DataCenterPlanner.Models
 {
     public class HardwareConfig
     {
@@ -14,5 +10,8 @@ namespace DataCenterPlanner.Models
 
         public int Server12kIops { get; set; } = 12000;
         public int Server5kIops { get; set; } = 5000;
+
+        public bool Allow12kServers { get; set; } = true;
+        public bool Allow5kServers { get; set; } = true;
     }
 }

@@ -22,7 +22,7 @@ namespace DataCenterPlanner.Models
                      RackCount = group.Count(),
                      Total12kServers = group.Sum(r => r.Count12kServers),
                      Total5kServers = group.Sum(r => r.Count5kServers),
-                     TotalSwitches = group.Sum(r => r.SwitchCount),
+                     TotalSwitches = group.Sum(r => r.TotalDisplayedSwitches),
                      PlannedIops = group.Sum(r => r.TotalIops),
                      Racks = group.OrderBy(r => r.RackNumber).ToList()
                  })

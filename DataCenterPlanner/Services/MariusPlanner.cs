@@ -9,6 +9,11 @@ namespace DataCenterPlanner.Services
     {
         public PlannerResult Calculate(List<CategoryRequest> requests, HardwareConfig config)
         {
+            if (!config.Allow12kServers && !config.Allow5kServers)
+            {
+                throw new InvalidOperationException("At least one server type must be allowed.");
+            }
+
             var result = new PlannerResult();
             int globalRackNumber = 1;
 
@@ -17,74 +22,151 @@ namespace DataCenterPlanner.Services
                 int remainingIops = request.TargetIops;
                 var categoryRacks = new List<RackPlan>();
 
-                while (remainingIops >= 60000)
+                // Fall 1: Nur 12k erlaubt
+                if (config.Allow12kServers && !config.Allow5kServers)
                 {
-                    categoryRacks.Add(new RackPlan
-                    {
-                        RackNumber = globalRackNumber++,
-                        Category = request.Category,
-                        Count12kServers = 5,
-                        Count5kServers = 0,
-                        SwitchCount = 1
-                    });
+                    int required12k = (int)Math.Ceiling(remainingIops / (double)config.Server12kIops);
 
-                    remainingIops -= 60000;
-                }
-
-                if (remainingIops > 0)
-                {
-                    var remainderRack = new RackPlan
+                    while (required12k > 0)
                     {
-                        RackNumber = globalRackNumber++,
-                        Category = request.Category,
-                        Count12kServers = 0,
-                        Count5kServers = 0,
-                        SwitchCount = 1
-                    };
-
-                    while (remainingIops > 0)
-                    {
-                        if (remainingIops >= config.Server12kIops)
+                        var rack = new RackPlan
                         {
-                            int hypotheticalUnits =
-                                ((remainderRack.Count12kServers + 1) * config.Server12kUnits) +
-                                (remainderRack.Count5kServers * config.Server5kUnits) +
-                                (remainderRack.SwitchCount * config.SwitchUnits);
+                            RackNumber = globalRackNumber++,
+                            Category = request.Category,
+                            Count12kServers = Math.Min(5, required12k),
+                            Count5kServers = 0,
+                            SwitchCount = 1
+                        };
 
-                            if (hypotheticalUnits <= config.RackUnits)
-                            {
-                                remainderRack.Count12kServers++;
-                                remainingIops -= config.Server12kIops;
+                        required12k -= rack.Count12kServers;
+                        categoryRacks.Add(rack);
+                    }
+                }
+                // Fall 2: Nur 5k erlaubt
+                else if (!config.Allow12kServers && config.Allow5kServers)
+                {
+                    int required5k = (int)Math.Ceiling(remainingIops / (double)config.Server5kIops);
+
+                    while (required5k > 0)
+                    {
+                        var rack = new RackPlan
+                        {
+                            RackNumber = globalRackNumber++,
+                            Category = request.Category,
+                            Count12kServers = 0,
+                            Count5kServers = 0,
+                            SwitchCount = 1
+                        };
+
+                        int usedUnits = config.SwitchUnits;
+
+                        while (required5k > 0 &&
+                               usedUnits + config.Server5kUnits <= config.RackUnits)
+                        {
+                            rack.Count5kServers++;
+                            required5k--;
+                            usedUnits += config.Server5kUnits;
+                        }
+
+                        categoryRacks.Add(rack);
+                    }
+                }
+                // Fall 3: Mixed mode -> Marius-Stil
+                else
+                {
+                    // Erst volle 60k-Racks mit 5x12k
+                    while (remainingIops > 60000)
+                    {
+                        categoryRacks.Add(new RackPlan
+                        {
+                            RackNumber = globalRackNumber++,
+                            Category = request.Category,
+                            Count12kServers = 5,
+                            Count5kServers = 0,
+                            SwitchCount = 1
+                        });
+
+                        remainingIops -= 60000;
+                    }
+
+                    // Rest-Rack bewusst "schön" lösen:
+                    // 1. so viele 12k wie sinnvoll
+                    // 2. dann mit 5k exakt oder knapp darüber schließen
+                    if (remainingIops > 0)
+                    {
+                        RackPlan? bestRack = null;
+                        int bestOvershoot = int.MaxValue;
+                        int best5kCount = -1;
+                        int best12kCount = -1;
+
+                        for (int count12k = 0; count12k <= 5; count12k++)
+                        {
+                            int unitsFrom12k = count12k * config.Server12kUnits + config.SwitchUnits;
+                            if (unitsFrom12k > config.RackUnits)
                                 continue;
+
+                            for (int count5k = 0; count5k <= 20; count5k++)
+                            {
+                                int usedUnits = unitsFrom12k + (count5k * config.Server5kUnits);
+                                if (usedUnits > config.RackUnits)
+                                    continue;
+
+                                int plannedIops =
+                                    (count12k * config.Server12kIops) +
+                                    (count5k * config.Server5kIops);
+
+                                if (plannedIops < remainingIops)
+                                    continue;
+
+                                int overshoot = plannedIops - remainingIops;
+
+                                bool isBetter = false;
+
+                                if (overshoot < bestOvershoot)
+                                {
+                                    isBetter = true;
+                                }
+                                else if (overshoot == bestOvershoot)
+                                {
+                                    // Im Marius-Mode bei Gleichstand lieber MEHR 5k im Rest-Rack,
+                                    // damit die Restlösung eher "kleinteilig" und sauber wirkt
+                                    if (count5k > best5kCount)
+                                    {
+                                        isBetter = true;
+                                    }
+                                    else if (count5k == best5kCount && count12k > best12kCount)
+                                    {
+                                        isBetter = true;
+                                    }
+                                }
+
+                                if (isBetter)
+                                {
+                                    bestOvershoot = overshoot;
+                                    best5kCount = count5k;
+                                    best12kCount = count12k;
+
+                                    bestRack = new RackPlan
+                                    {
+                                        RackNumber = globalRackNumber,
+                                        Category = request.Category,
+                                        Count12kServers = count12k,
+                                        Count5kServers = count5k,
+                                        SwitchCount = 1
+                                    };
+                                }
                             }
                         }
 
-                        int hypothetical5kUnits =
-                            (remainderRack.Count12kServers * config.Server12kUnits) +
-                            ((remainderRack.Count5kServers + 1) * config.Server5kUnits) +
-                            (remainderRack.SwitchCount * config.SwitchUnits);
-
-                        if (hypothetical5kUnits <= config.RackUnits)
+                        if (bestRack == null)
                         {
-                            remainderRack.Count5kServers++;
-                            remainingIops -= config.Server5kIops;
+                            throw new InvalidOperationException(
+                                $"Could not create a valid remainder rack for {request.Category}.");
                         }
-                        else
-                        {
-                            categoryRacks.Add(remainderRack);
 
-                            remainderRack = new RackPlan
-                            {
-                                RackNumber = globalRackNumber++,
-                                Category = request.Category,
-                                Count12kServers = 0,
-                                Count5kServers = 0,
-                                SwitchCount = 1
-                            };
-                        }
+                        bestRack.RackNumber = globalRackNumber++;
+                        categoryRacks.Add(bestRack);
                     }
-
-                    categoryRacks.Add(remainderRack);
                 }
 
                 result.Racks.AddRange(categoryRacks);
@@ -111,7 +193,7 @@ namespace DataCenterPlanner.Services
             result.TotalPlannedIops = result.Racks.Sum(r => r.TotalIops);
             result.Total12kServers = result.Racks.Sum(r => r.Count12kServers);
             result.Total5kServers = result.Racks.Sum(r => r.Count5kServers);
-            result.TotalSwitches = result.Racks.Sum(r => r.SwitchCount);
+            result.TotalSwitches = result.Racks.Sum(r => r.TotalDisplayedSwitches);
 
             return result;
         }

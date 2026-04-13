@@ -20,7 +20,10 @@ namespace DataCenterPlanner.Logic
                     : serverCount;
 
                 int rackSwitches =
-                    (int)Math.Ceiling(requiredPorts / 16.0);
+                    Math.Max(1, (int)Math.Ceiling(requiredPorts / 16.0));
+
+                rack.RequiredRackSwitches = rackSwitches;
+                rack.ExtraMainSwitches = rack.IsMainRack ? 1 : 0;
 
                 totalRackSwitches += rackSwitches;
                 totalRj45SfpModules += requiredPorts;
