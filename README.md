@@ -38,7 +38,7 @@ You can define target IOPS separately for:
 - SystemX
 - RISC
 - Mainframe
--GPU
+- GPU
 
 The planner automatically selects:
 
