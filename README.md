@@ -12,7 +12,7 @@ Rack and network planning tool for the game Data Center.
 
 ## Current Version
 
-v0.3.0-alpha
+v0.5.1
 
 ## Disclaimer:
 
@@ -23,6 +23,8 @@ If you dont like Vibe COding projects, don't use it. i dont make money from it o
 ## Usage:
 
 DataCenterPlanner calculates a complete rack and basic network layout based on the required IOPS per server category.
+Windows will of course warn you that this is an unknown apllication from an unknown source. You will have to click on "More information"
+and "run anyway" afterwards. The Code is all up there to read and see that there wont be an issue with this program :)
 
 ### 1. Select a planning mode
 
