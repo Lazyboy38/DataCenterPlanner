@@ -43,5 +43,6 @@ namespace DataCenterPlanner.Models
             }
         }
         public NetworkSummary Network { get; set; } = new();
+        public ShoppingSummary Shopping { get; set; } = new();
     }
 }

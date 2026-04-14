@@ -319,8 +319,9 @@
 
     </Window.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer x:Name="MainScrollViewer"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled">
         <Grid Margin="22">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -413,7 +414,7 @@
                                 SelectedIndex="0"
                                 Style="{StaticResource ModernComboBoxStyle}"
                                 ItemContainerStyle="{StaticResource ModernComboBoxItemStyle}">
-                                <ComboBoxItem Content="Marius Mode"/>
+                                <ComboBoxItem Content="Balanced Racks"/>
                                 <ComboBoxItem Content="Minimum Racks"/>
                             </ComboBox>
                             <Border Background="#202734"
@@ -551,6 +552,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="14"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="14"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
@@ -702,7 +705,10 @@
                         <!-- Category Cards -->
                         <ScrollViewer Grid.Row="5"
                             VerticalScrollBarVisibility="Auto"
-                            HorizontalScrollBarVisibility="Disabled">
+                            HorizontalScrollBarVisibility="Disabled"
+                            PreviewMouseWheel="ResultScrollViewer_PreviewMouseWheel">
+                            
+                            
                             <ItemsControl ItemsSource="{Binding CategoryCards, Mode=OneWay}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -849,6 +855,82 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ScrollViewer>
+                        <Border Grid.Row="7"
+                            Background="#202734"
+                            BorderBrush="#35516A"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="16"
+                            Margin="0,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Shopping Summary"
+                                    Foreground="{StaticResource AccentBrushSoft}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Margin="0,0,0,12"/>
+
+                                <UniformGrid Columns="4">
+                                    <Border Background="#1A212C"
+                                        CornerRadius="10"
+                                        Padding="12"
+                                        Margin="0,0,10,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Compute Cost"
+                                                Foreground="{StaticResource MutedTextBrush}"
+                                                FontSize="12"/>
+                                            <TextBlock Text="{Binding Shopping.ComputeCost, Mode=OneWay, StringFormat={}{0:N0}$}"
+                                                Foreground="#F2C94C"
+                                                FontSize="22"
+                                                FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Background="#1A212C"
+                                        CornerRadius="10"
+                                        Padding="12"
+                                        Margin="0,0,10,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Infrastructure Cost"
+                                                Foreground="{StaticResource MutedTextBrush}"
+                                                FontSize="12"/>
+                                            <TextBlock Text="{Binding Shopping.InfrastructureCost, Mode=OneWay, StringFormat={}{0:N0}$}"
+                                                Foreground="#4AAEFF"
+                                                FontSize="22"
+                                                FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Background="#1A212C"
+                                        CornerRadius="10"
+                                        Padding="12"
+                                        Margin="0,0,10,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Module Cost"
+                                                Foreground="{StaticResource MutedTextBrush}"
+                                                FontSize="12"/>
+                                            <TextBlock Text="{Binding Shopping.ModuleCost, Mode=OneWay, StringFormat={}{0:N0}$}"
+                                                Foreground="#57D68D"
+                                                FontSize="22"
+                                                FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Background="#1A212C"
+                                        CornerRadius="10"
+                                        Padding="12">
+                                        <StackPanel>
+                                            <TextBlock Text="Total Cost"
+                                                Foreground="{StaticResource MutedTextBrush}"
+                                                FontSize="12"/>
+                                            <TextBlock Text="{Binding Shopping.TotalCost, Mode=OneWay, StringFormat={}{0:N0}$}"
+                                                Foreground="{StaticResource AccentBrushSoft}"
+                                                FontSize="22"
+                                                FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
                     </Grid>
                 </Border>
             </Grid>

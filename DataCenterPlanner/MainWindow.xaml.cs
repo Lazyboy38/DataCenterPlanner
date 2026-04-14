@@ -18,6 +18,15 @@ namespace DataCenterPlanner
             SetBuildVersion();
         }
 
+        private void ResultScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if (MainScrollViewer == null)
+                return;
+
+            MainScrollViewer.ScrollToVerticalOffset(MainScrollViewer.VerticalOffset - e.Delta);
+            e.Handled = true;
+        }
+
         private void CalculateButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -64,6 +73,7 @@ namespace DataCenterPlanner
                 result.Racks,
                 RedundancyCheckBox.IsChecked == true);
                 result.TotalSwitches = result.Racks.Sum(r => r.TotalDisplayedSwitches);
+                result.Shopping = ShoppingPlanner.CalculateSummary(result);
 
                 DataContext = result;
             }

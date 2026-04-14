@@ -72,6 +72,7 @@ namespace DataCenterPlanner.Services
                     }
                 }
                 // Fall 3: Mixed mode -> Marius-Stil
+                // Fall 3: Mixed mode -> Balanced / structured style
                 else
                 {
                     // Erst volle 60k-Racks mit 5x12k
@@ -89,15 +90,13 @@ namespace DataCenterPlanner.Services
                         remainingIops -= 60000;
                     }
 
-                    // Rest-Rack bewusst "schön" lösen:
-                    // 1. so viele 12k wie sinnvoll
-                    // 2. dann mit 5k exakt oder knapp darüber schließen
+                    // Rest-Rack im Balanced-Stil:
+                    // 12k möglichst stark bevorzugen, 5k nur zum Auffüllen
                     if (remainingIops > 0)
                     {
                         RackPlan? bestRack = null;
+                        int bestScore = int.MinValue;
                         int bestOvershoot = int.MaxValue;
-                        int best5kCount = -1;
-                        int best12kCount = -1;
 
                         for (int count12k = 0; count12k <= 5; count12k++)
                         {
@@ -120,21 +119,24 @@ namespace DataCenterPlanner.Services
 
                                 int overshoot = plannedIops - remainingIops;
 
+                                // Balanced-Score:
+                                // 12k stark bevorzugen
+                                // 5k nur ergänzend
+                                // kleiner Overshoot bleibt wichtig, aber nicht absolut dominant
+                                int score =
+                                    (count12k * 1000)      // 12k stark bevorzugen
+                                    - (count5k * 10)       // zu viele 5k leicht bestrafen
+                                    - overshoot;           // Overshoot bleibt relevant
+
                                 bool isBetter = false;
 
-                                if (overshoot < bestOvershoot)
+                                if (score > bestScore)
                                 {
                                     isBetter = true;
                                 }
-                                else if (overshoot == bestOvershoot)
+                                else if (score == bestScore)
                                 {
-                                    // Im Marius-Mode bei Gleichstand lieber MEHR 5k im Rest-Rack,
-                                    // damit die Restlösung eher "kleinteilig" und sauber wirkt
-                                    if (count5k > best5kCount)
-                                    {
-                                        isBetter = true;
-                                    }
-                                    else if (count5k == best5kCount && count12k > best12kCount)
+                                    if (overshoot < bestOvershoot)
                                     {
                                         isBetter = true;
                                     }
@@ -142,9 +144,8 @@ namespace DataCenterPlanner.Services
 
                                 if (isBetter)
                                 {
+                                    bestScore = score;
                                     bestOvershoot = overshoot;
-                                    best5kCount = count5k;
-                                    best12kCount = count12k;
 
                                     bestRack = new RackPlan
                                     {
