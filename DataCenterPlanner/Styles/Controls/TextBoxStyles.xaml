@@ -1,0 +1,31 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style TargetType="TextBox">
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="Margin" Value="0,0,0,14"/>
+        <Setter Property="Background" Value="{StaticResource InputBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrushBlue}"/>
+        <Setter Property="BorderThickness" Value="1.2"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="CaretBrush" Value="{StaticResource AccentBrushSoft}"/>
+    </Style>
+
+    <Style TargetType="TextBox" x:Key="ResultBoxStyle" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Background" Value="#161C25"/>
+        <Setter Property="BorderBrush" Value="#3D90C8"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="14"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Height" Value="Auto"/>
+    </Style>
+</ResourceDictionary>
