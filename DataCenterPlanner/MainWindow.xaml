@@ -677,12 +677,12 @@
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Width="220"
+                                                <Border Width="260"
                                                         Background="#202734"
                                                         BorderBrush="{Binding AccentColorHex}"
                                                         BorderThickness="1.5"
                                                         CornerRadius="12"
-                                                        Margin="0,0,12,12">
+                                                        Margin="0,0,14,14">
                                                     <StackPanel>
 
                                                         <!-- Header -->
@@ -723,7 +723,7 @@
                                                                     <Border Height="{Binding DisplayHeight}"
                                                                             Background="{Binding ColorHex}"
                                                                             ClipToBounds="True"
-                                                                            BorderBrush="#0A0F14"
+                                                                            BorderBrush="#2A3545"
                                                                             BorderThickness="0,0,0,1">
                                                                         <Grid Margin="5,0">
                                                                             <Grid.ColumnDefinitions>

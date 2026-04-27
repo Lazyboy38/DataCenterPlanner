@@ -78,23 +78,16 @@ namespace DataCenterPlanner.Models
                 var slots = new List<RackSlotItem>();
                 int u = 1;
 
+                slots.Add(new RackSlotItem { StartU = u, HeightU = 1, Name = "Distribution Switch A", ColorHex = "#1A5C6E" });
+                u += 1;
+
                 if (IsMainRack)
                 {
-                    slots.Add(new RackSlotItem { StartU = u, HeightU = 2, Name = "Patch Panel Fiber (Uplinks)", ColorHex = "#2B4D6E" });
-                    u += 2;
-                    slots.Add(new RackSlotItem { StartU = u, HeightU = 1, Name = "Distribution Switch A", ColorHex = "#1A5C6E" });
-                    u += 1;
-                    slots.Add(new RackSlotItem { StartU = u, HeightU = 2, Name = "Patch Panel RJ45 (Server NICs)", ColorHex = "#1E3A5F" });
-                    u += 2;
-                    slots.Add(new RackSlotItem { StartU = u, HeightU = 1, Name = "Distribution Switch B", ColorHex = "#1A5C6E" });
+                    slots.Add(new RackSlotItem { StartU = u, HeightU = 1, Name = "Main Switch", ColorHex = "#3E9EE0" });
                     u += 1;
                 }
                 else
                 {
-                    slots.Add(new RackSlotItem { StartU = u, HeightU = 2, Name = "Patch Panel RJ45 (Server NICs)", ColorHex = "#1E3A5F" });
-                    u += 2;
-                    slots.Add(new RackSlotItem { StartU = u, HeightU = 1, Name = "Distribution Switch A", ColorHex = "#1A5C6E" });
-                    u += 1;
                     for (int i = 1; i < TotalDisplayedSwitches; i++)
                     {
                         slots.Add(new RackSlotItem { StartU = u, HeightU = 1, Name = "Distribution Switch B", ColorHex = "#1A5C6E" });
@@ -129,8 +122,7 @@ namespace DataCenterPlanner.Models
             }
         }
 
-        public int VisualUsedUnits => (IsMainRack ? 6 : 2 + TotalDisplayedSwitches)
-                                     + (Count12kServers * 7) + (Count5kServers * 3);
+        public int VisualUsedUnits => TotalDisplayedSwitches + (Count12kServers * 7) + (Count5kServers * 3);
 
         public string UsageSummary =>
             $"{VisualUsedUnits}/47U · {(VisualUsedUnits * 100.0 / RackCapacityUnits):F0}%";
