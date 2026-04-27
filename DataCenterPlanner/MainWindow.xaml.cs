@@ -53,6 +53,12 @@ namespace DataCenterPlanner
             });
         }
 
+        private void ShoppingScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            ShoppingScrollViewer.ScrollToVerticalOffset(ShoppingScrollViewer.VerticalOffset - e.Delta);
+            e.Handled = true;
+        }
+
         private void ResultScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             if (MainScrollViewer == null)
