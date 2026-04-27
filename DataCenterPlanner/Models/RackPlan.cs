@@ -105,17 +105,23 @@ namespace DataCenterPlanner.Models
                     slots.Add(new RackSlotItem { StartU = infraEnd, HeightU = freeUnits, Name = $"{freeUnits}U free", ColorHex = "#0E141C", IsFree = true });
                 }
 
+                string serverLabelColor = Category switch
+                {
+                    ServerCategory.SystemX => "#1C1200",
+                    ServerCategory.GPU     => "#001C0A",
+                    _                      => "White"
+                };
+
                 int su = serverStartU;
-                if (Count12kServers > 0)
+                for (int i = 0; i < Count12kServers; i++)
                 {
-                    int h = Count12kServers * 7;
-                    slots.Add(new RackSlotItem { StartU = su, HeightU = h, Name = $"{Count12kServers}× {CategoryDisplayName} Large", ColorHex = AccentColorHex });
-                    su += h;
+                    slots.Add(new RackSlotItem { StartU = su, HeightU = 7, Name = $"{CategoryDisplayName} Large", ColorHex = AccentColorHex, LabelColorHex = serverLabelColor });
+                    su += 7;
                 }
-                if (Count5kServers > 0)
+                for (int i = 0; i < Count5kServers; i++)
                 {
-                    int h = Count5kServers * 3;
-                    slots.Add(new RackSlotItem { StartU = su, HeightU = h, Name = $"{Count5kServers}× {CategoryDisplayName} Small", ColorHex = AccentColorHex });
+                    slots.Add(new RackSlotItem { StartU = su, HeightU = 3, Name = $"{CategoryDisplayName} Small", ColorHex = AccentColorHex, LabelColorHex = serverLabelColor });
+                    su += 3;
                 }
 
                 return slots;
