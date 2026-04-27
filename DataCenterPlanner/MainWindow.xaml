@@ -725,27 +725,34 @@
                                                                             ClipToBounds="True"
                                                                             BorderBrush="#2A3545"
                                                                             BorderThickness="0,0,0,1">
-                                                                        <Grid Margin="5,0">
+                                                                        <Grid Margin="6,0">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="32"/>
                                                                                 <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition Width="24"/>
+                                                                                <ColumnDefinition Width="26"/>
                                                                             </Grid.ColumnDefinitions>
                                                                             <TextBlock Grid.Column="0"
                                                                                        Text="{Binding ULabel}"
-                                                                                       FontSize="8"
-                                                                                       Foreground="#8AA4B8"
+                                                                                       FontSize="{Binding LabelFontSize}"
+                                                                                       Foreground="{Binding LabelColorHex}"
+                                                                                       Opacity="0.6"
                                                                                        VerticalAlignment="Center"/>
                                                                             <TextBlock Grid.Column="1"
                                                                                        Text="{Binding Name}"
-                                                                                       FontSize="9"
-                                                                                       Foreground="White"
+                                                                                       FontSize="{Binding LabelFontSize}"
+                                                                                       FontWeight="SemiBold"
+                                                                                       Foreground="{Binding LabelColorHex}"
                                                                                        VerticalAlignment="Center"
-                                                                                       TextTrimming="CharacterEllipsis"/>
+                                                                                       TextTrimming="CharacterEllipsis">
+                                                                                <TextBlock.Effect>
+                                                                                    <DropShadowEffect ShadowDepth="0" BlurRadius="4" Color="Black" Opacity="0.5"/>
+                                                                                </TextBlock.Effect>
+                                                                            </TextBlock>
                                                                             <TextBlock Grid.Column="2"
                                                                                        Text="{Binding HeightLabel}"
-                                                                                       FontSize="8"
-                                                                                       Foreground="#8AA4B8"
+                                                                                       FontSize="{Binding LabelFontSize}"
+                                                                                       Foreground="{Binding LabelColorHex}"
+                                                                                       Opacity="0.6"
                                                                                        HorizontalAlignment="Right"
                                                                                        VerticalAlignment="Center"/>
                                                                         </Grid>
