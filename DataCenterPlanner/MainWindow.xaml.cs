@@ -16,6 +16,41 @@ namespace DataCenterPlanner
         {
             InitializeComponent();
             SetBuildVersion();
+            LoadSettings();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            SaveSettings();
+            base.OnClosing(e);
+        }
+
+        private void LoadSettings()
+        {
+            var s = SettingsService.Load();
+            PlanningModeComboBox.SelectedIndex = s.PlanningModeIndex;
+            RedundancyCheckBox.IsChecked = s.Redundancy;
+            Allow12kServersCheckBox.IsChecked = s.Allow12kServers;
+            Allow5kServersCheckBox.IsChecked = s.Allow5kServers;
+            SystemXIopsTextBox.Text = s.SystemXIops;
+            RiscIopsTextBox.Text = s.RiscIops;
+            MainframeIopsTextBox.Text = s.MainframeIops;
+            GpuIopsTextBox.Text = s.GpuIops;
+        }
+
+        private void SaveSettings()
+        {
+            SettingsService.Save(new Models.UserSettings
+            {
+                PlanningModeIndex = PlanningModeComboBox.SelectedIndex,
+                Redundancy = RedundancyCheckBox.IsChecked == true,
+                Allow12kServers = Allow12kServersCheckBox.IsChecked == true,
+                Allow5kServers = Allow5kServersCheckBox.IsChecked == true,
+                SystemXIops = SystemXIopsTextBox.Text,
+                RiscIops = RiscIopsTextBox.Text,
+                MainframeIops = MainframeIopsTextBox.Text,
+                GpuIops = GpuIopsTextBox.Text
+            });
         }
 
         private void ResultScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
