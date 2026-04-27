@@ -658,8 +658,10 @@
                         </TabItem>
 
                         <TabItem Header="Shopping">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled">
+                            <ScrollViewer x:Name="ShoppingScrollViewer"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          PreviewMouseWheel="ShoppingScrollViewer_PreviewMouseWheel">
                                 <StackPanel Margin="12,10,12,12">
                                     <TextBlock Text="Shopping List"
                                Style="{StaticResource SectionTitleStyle}"/>
