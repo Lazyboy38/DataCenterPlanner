@@ -2,7 +2,7 @@ namespace DataCenterPlanner.Models
 {
     public class RackSlotItem
     {
-        private const double PixelsPerUnit = 10.0;
+        private const double PixelsPerUnit = 14.0;
 
         public int StartU { get; set; }
         public int HeightU { get; set; }
