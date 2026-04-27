@@ -688,7 +688,20 @@
                                                   Style="{StaticResource ModernDataGridStyle}"
                                                   HeadersVisibility="Column"
                                                   MinHeight="80">
+                                                            <DataGrid.RowStyle>
+                                                                <Style TargetType="DataGridRow">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsBought}" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.35"/>
+                                                                            <Setter Property="FontStyle" Value="Italic"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </DataGrid.RowStyle>
                                                             <DataGrid.Columns>
+                                                                <DataGridCheckBoxColumn Header="✓"
+                                                                    Binding="{Binding IsBought, UpdateSourceTrigger=PropertyChanged}"
+                                                                    Width="36"/>
                                                                 <DataGridTextColumn Header="Item"
                                                                     Binding="{Binding Name}"
                                                                     Width="*"/>
