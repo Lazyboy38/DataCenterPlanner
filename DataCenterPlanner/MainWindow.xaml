@@ -727,7 +727,7 @@
                                                                             BorderThickness="0,0,0,1">
                                                                         <Grid Margin="6,0">
                                                                             <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="32"/>
+                                                                                <ColumnDefinition Width="44"/>
                                                                                 <ColumnDefinition Width="*"/>
                                                                                 <ColumnDefinition Width="26"/>
                                                                             </Grid.ColumnDefinitions>
@@ -743,11 +743,7 @@
                                                                                        FontWeight="SemiBold"
                                                                                        Foreground="{Binding LabelColorHex}"
                                                                                        VerticalAlignment="Center"
-                                                                                       TextTrimming="CharacterEllipsis">
-                                                                                <TextBlock.Effect>
-                                                                                    <DropShadowEffect ShadowDepth="0" BlurRadius="4" Color="Black" Opacity="0.5"/>
-                                                                                </TextBlock.Effect>
-                                                                            </TextBlock>
+                                                                                       TextTrimming="CharacterEllipsis"/>
                                                                             <TextBlock Grid.Column="2"
                                                                                        Text="{Binding HeightLabel}"
                                                                                        FontSize="{Binding LabelFontSize}"
