@@ -687,7 +687,8 @@
                                                         <DataGrid ItemsSource="{Binding Items, Mode=OneWay}"
                                                   Style="{StaticResource ModernDataGridStyle}"
                                                   HeadersVisibility="Column"
-                                                  MinHeight="80">
+                                                  MinHeight="80"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                                             <DataGrid.RowStyle>
                                                                 <Style TargetType="DataGridRow">
                                                                     <Style.Triggers>
@@ -699,9 +700,15 @@
                                                                 </Style>
                                                             </DataGrid.RowStyle>
                                                             <DataGrid.Columns>
-                                                                <DataGridCheckBoxColumn Header="✓"
-                                                                    Binding="{Binding IsBought, UpdateSourceTrigger=PropertyChanged}"
-                                                                    Width="36"/>
+                                                                <DataGridTemplateColumn Header="✓" Width="36">
+                                                                    <DataGridTemplateColumn.CellTemplate>
+                                                                        <DataTemplate>
+                                                                            <CheckBox IsChecked="{Binding IsBought, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                      HorizontalAlignment="Center"
+                                                                                      VerticalAlignment="Center"/>
+                                                                        </DataTemplate>
+                                                                    </DataGridTemplateColumn.CellTemplate>
+                                                                </DataGridTemplateColumn>
                                                                 <DataGridTextColumn Header="Item"
                                                                     Binding="{Binding Name}"
                                                                     Width="*"/>
