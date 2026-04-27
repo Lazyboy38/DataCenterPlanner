@@ -55,7 +55,10 @@ namespace DataCenterPlanner
 
         private void ShoppingScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
-            ShoppingScrollViewer.ScrollToVerticalOffset(ShoppingScrollViewer.VerticalOffset - e.Delta);
+            if (MainScrollViewer == null)
+                return;
+
+            MainScrollViewer.ScrollToVerticalOffset(MainScrollViewer.VerticalOffset - e.Delta);
             e.Handled = true;
         }
 
