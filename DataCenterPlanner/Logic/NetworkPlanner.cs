@@ -31,8 +31,9 @@ namespace DataCenterPlanner.Logic
 
             int mainSwitches = 1;
 
+            int upstreamLinks = redundancy ? 2 : 1;
             int qsfpModules =
-                (totalRackSwitches * 2) + 2;
+                (totalRackSwitches * 2 + 2) * upstreamLinks;
 
             int qsfpPacks =
                 (int)Math.Ceiling(qsfpModules / 5.0);
