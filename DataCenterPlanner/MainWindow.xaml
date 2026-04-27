@@ -657,6 +657,129 @@
                             </Grid>
                         </TabItem>
 
+                        <TabItem Header="Rack View">
+                            <ScrollViewer x:Name="RackViewScrollViewer"
+                                          VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          PreviewMouseWheel="RackViewScrollViewer_PreviewMouseWheel">
+                                <StackPanel Margin="12,10,12,12">
+                                    <TextBlock Text="Rack Layout"
+                                               Style="{StaticResource SectionTitleStyle}"/>
+                                    <TextBlock Text="Visual slot layout for all planned racks"
+                                               Foreground="{StaticResource MutedTextBrush}"
+                                               Margin="0,0,0,14"/>
+
+                                    <ItemsControl ItemsSource="{Binding Racks}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="220"
+                                                        Background="#202734"
+                                                        BorderBrush="{Binding AccentColorHex}"
+                                                        BorderThickness="1.5"
+                                                        CornerRadius="12"
+                                                        Margin="0,0,12,12">
+                                                    <StackPanel>
+
+                                                        <!-- Header -->
+                                                        <Border Background="#161C25"
+                                                                CornerRadius="10,10,0,0"
+                                                                Padding="10,8">
+                                                            <StackPanel>
+                                                                <DockPanel>
+                                                                    <TextBlock Text="{Binding RackTitle}"
+                                                                               Foreground="White"
+                                                                               FontWeight="Bold"
+                                                                               FontSize="11"/>
+                                                                    <TextBlock Text="{Binding UsageSummary}"
+                                                                               Foreground="#8AA4B8"
+                                                                               FontSize="10"
+                                                                               HorizontalAlignment="Right"
+                                                                               DockPanel.Dock="Right"/>
+                                                                </DockPanel>
+                                                                <Border Height="4"
+                                                                        Background="#0E141C"
+                                                                        CornerRadius="3"
+                                                                        Margin="0,5,0,0">
+                                                                    <Grid>
+                                                                        <Border HorizontalAlignment="Left"
+                                                                                Width="{Binding VisualBarWidth}"
+                                                                                Background="{Binding AccentColorHex}"
+                                                                                CornerRadius="3"
+                                                                                Height="4"/>
+                                                                    </Grid>
+                                                                </Border>
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <!-- Rack slots -->
+                                                        <ItemsControl ItemsSource="{Binding Slots}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border Height="{Binding DisplayHeight}"
+                                                                            Background="{Binding ColorHex}"
+                                                                            ClipToBounds="True"
+                                                                            BorderBrush="#0A0F14"
+                                                                            BorderThickness="0,0,0,1">
+                                                                        <Grid Margin="5,0">
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="32"/>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                                <ColumnDefinition Width="24"/>
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <TextBlock Grid.Column="0"
+                                                                                       Text="{Binding ULabel}"
+                                                                                       FontSize="8"
+                                                                                       Foreground="#8AA4B8"
+                                                                                       VerticalAlignment="Center"/>
+                                                                            <TextBlock Grid.Column="1"
+                                                                                       Text="{Binding Name}"
+                                                                                       FontSize="9"
+                                                                                       Foreground="White"
+                                                                                       VerticalAlignment="Center"
+                                                                                       TextTrimming="CharacterEllipsis"/>
+                                                                            <TextBlock Grid.Column="2"
+                                                                                       Text="{Binding HeightLabel}"
+                                                                                       FontSize="8"
+                                                                                       Foreground="#8AA4B8"
+                                                                                       HorizontalAlignment="Right"
+                                                                                       VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+
+                                                        <!-- Category legend -->
+                                                        <Border Background="#161C25"
+                                                                CornerRadius="0,0,10,10"
+                                                                Padding="10,6">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Ellipse Width="8"
+                                                                         Height="8"
+                                                                         Fill="{Binding AccentColorHex}"
+                                                                         VerticalAlignment="Center"
+                                                                         Margin="0,0,6,0"/>
+                                                                <TextBlock Text="{Binding CategoryDisplayName}"
+                                                                           Foreground="#8AA4B8"
+                                                                           FontSize="10"
+                                                                           VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+
                         <TabItem Header="Shopping">
                             <ScrollViewer x:Name="ShoppingScrollViewer"
                           VerticalScrollBarVisibility="Auto"
