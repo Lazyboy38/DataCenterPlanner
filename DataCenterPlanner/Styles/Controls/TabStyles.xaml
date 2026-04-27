@@ -55,6 +55,8 @@
                         <Border x:Name="TabSurface"
                                 Grid.Row="0"
                                 Background="{TemplateBinding Background}"
+                                BorderBrush="#3A4558"
+                                BorderThickness="1"
                                 CornerRadius="12"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter x:Name="ContentSite"
@@ -76,12 +78,14 @@
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Panel.ZIndex" Value="10"/>
                             <Setter TargetName="TabSurface" Property="Background" Value="#253042"/>
+                            <Setter TargetName="TabSurface" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                             <Setter Property="Foreground" Value="{StaticResource AccentBrushSoft}"/>
                             <Setter TargetName="ActiveUnderline" Property="Background" Value="{StaticResource AccentBrush}"/>
                         </Trigger>
 
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="TabSurface" Property="Background" Value="#2A3648"/>
+                            <Setter TargetName="TabSurface" Property="BorderBrush" Value="#4A5A70"/>
                             <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
                         </Trigger>
 
